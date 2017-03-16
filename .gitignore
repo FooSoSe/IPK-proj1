@@ -27,3 +27,9 @@
 *.exe
 *.out
 *.app
+
+#My Files
+CMakeLists.txt
+ftrest
+ftrestd
+cmake-build-debug/
