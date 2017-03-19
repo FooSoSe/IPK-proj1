@@ -137,39 +137,62 @@ void Server::doCommand()
                         content += "\t";
                     }
                     closedir(dir);
-                } else {
-                    // 404 Not Found - objekt (soubor/adresář) v požadavku neexistuje
-                    response_code = "404";
-                    content = "Directory not found.\n";
                 }
             } else {
                 response_code = "400";
                 content = "Not a directory.\n";
             }
-        }
-    }
-    else if (method == "DELETE" && response_code == "200")
-    {
-        if (remove((user + "/" + local_path).c_str()) < 0)
-        {
+        } else {
             response_code = "404";
             content = "Directory not found.\n";
         }
     }
+    else if (method == "DELETE" && type == "folder" && response_code == "200")
+    {
+        if (stat((user + "/" + local_path).c_str(), &s) == 0) {
+            if (s.st_mode & S_IFDIR)
+                remove((user + "/" + local_path).c_str());
+            else {
+                response_code = "400";
+                content = "Not a directory.\n";
+            }
+        } else {
+            response_code = "404";
+            content = "Directory not found.\n";
+        }
+    }
+    else if (method == "DELETE" && type == "file" && response_code == "200")
+    {
+        if (stat((user + "/" + local_path).c_str(), &s) == 0) {
+            if (s.st_mode & S_IFREG)
+                remove((user + "/" + local_path).c_str());
+            else {
+                response_code = "400";
+                content = "Not a file.\n";
+            }
+        } else {
+            response_code = "404";
+            content = "File not found.\n";
+        }
+    }
     else if (method == "PUT" && type == "folder" && response_code == "200") {
         if (mkdir((user + "/" + local_path).c_str(), 0755) < 0)
+        {
             response_code = "404";
             content = "Already exists.\n";
+        }
     }
     else if (method == "GET" && type == "file" && response_code == "200") {
-        if ((dir = opendir((user + "/" + local_path).c_str())) == NULL) {
+        if ((dir = opendir((user + "/" + local_path).c_str())) == NULL)
+        {
             response_code = "404";
             content = "File not found.\n";
         } else
             closedir(dir);
     }
     else if (method == "PUT" && type == "file" && response_code == "200") {
-        if ((dir = opendir((user + "/" + local_path).c_str())) == NULL) {
+        if ((dir = opendir((user + "/" + local_path).c_str())) == NULL)
+        {
             response_code = "404";
             content = "Already exists.\n";
         } else
