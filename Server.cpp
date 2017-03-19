@@ -1,9 +1,5 @@
 #include "Server.h"
 
-#include <stdlib.h>
-#include <sstream>
-#include <sys/stat.h>
-
 void Server::establishConnection()
 {
     sa_client_len = sizeof(sa_client);
@@ -36,9 +32,11 @@ void Server::establishConnection()
 
 void Server::doResponse()
 {
+    int comm_socket;
+
     while(1)
     {
-        int comm_socket = accept(welcome_socket, (struct sockaddr*)&sa_client, &sa_client_len);
+        comm_socket = accept(welcome_socket, (struct sockaddr*)&sa_client, &sa_client_len);
         if (comm_socket > 0)
         {
             char buff[1024];
@@ -123,7 +121,7 @@ void Server::doCommand()
     // then we process request sent from client
     if (method == "GET" && type == "folder" && response_code == "200")
     {
-        if ((dir = opendir((user + local_path).c_str())) != NULL)
+        if ((dir = opendir((user + "/" + local_path).c_str())) != NULL)
         {
             /* print all the files and directories within directory */
             while ((ent = readdir(dir)) != NULL)
@@ -143,7 +141,7 @@ void Server::doCommand()
     }
     else if (method == "DELETE" && response_code == "200")
     {
-        if (remove((user + local_path).c_str()) < 0)
+        if (remove((user + "/" + local_path).c_str()) < 0)
         {
             perror("");
             response_code = "404";
@@ -151,9 +149,23 @@ void Server::doCommand()
         }
     }
     else if (method == "PUT" && type == "folder" && response_code == "200") {
-        if (mkdir((user + local_path).c_str(), 0755) < 0)
+        if (mkdir((user + "/" + local_path).c_str(), 0755) < 0)
             response_code = "404";
             content = "Already exists.\n";
+    }
+    else if (method == "GET" && type == "file" && response_code == "200") {
+        if ((dir = opendir((user + "/" + local_path).c_str())) != NULL) {
+            response_code = "404";
+            content = "File not found.\n";
+        } else
+            closedir(dir);
+    }
+    else if (method == "PUT" && type == "file" && response_code == "200") {
+        if ((dir = opendir((user + "/" + local_path).c_str())) != NULL) {
+            response_code = "404";
+            content = "Already exists.\n";
+        } else
+            closedir(dir);
     }
 
     createResponseHeader(response_code);
