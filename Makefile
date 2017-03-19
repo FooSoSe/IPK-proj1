@@ -1,6 +1,8 @@
 CC=g++
 CPPFLAGS=-Wall -pedantic -std=c++11
 
+.PHONY: all clean
+
 all: client server
 
 client: client.cpp Connection.cpp
