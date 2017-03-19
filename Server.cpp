@@ -154,14 +154,14 @@ void Server::doCommand()
             content = "Already exists.\n";
     }
     else if (method == "GET" && type == "file" && response_code == "200") {
-        if ((dir = opendir((user + "/" + local_path).c_str())) != NULL) {
+        if ((dir = opendir((user + "/" + local_path).c_str())) == NULL) {
             response_code = "404";
             content = "File not found.\n";
         } else
             closedir(dir);
     }
     else if (method == "PUT" && type == "file" && response_code == "200") {
-        if ((dir = opendir((user + "/" + local_path).c_str())) != NULL) {
+        if ((dir = opendir((user + "/" + local_path).c_str())) == NULL) {
             response_code = "404";
             content = "Already exists.\n";
         } else
