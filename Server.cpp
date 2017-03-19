@@ -105,7 +105,7 @@ void Server::doCommand()
     struct stat s;
 
     // default response code if everything went good
-    string response_code = "200";
+    string response_code = "200 OK";
 
     // reset content of string to be sent to user
     content = "";
@@ -115,7 +115,7 @@ void Server::doCommand()
         closedir(dir);
     else
     {
-        response_code = "404";
+        response_code = "404 Not Found";
         content = "User Account Not Found.\n";
     }
 
@@ -139,11 +139,11 @@ void Server::doCommand()
                     closedir(dir);
                 }
             } else {
-                response_code = "400";
+                response_code = "400 Bad Request";
                 content = "Not a directory.\n";
             }
         } else {
-            response_code = "404";
+            response_code = "404 Not Found";
             content = "Directory not found.\n";
         }
     }
@@ -153,11 +153,11 @@ void Server::doCommand()
             if (s.st_mode & S_IFDIR)
                 remove((root_folder + "/" + user + "/" + local_path).c_str());
             else {
-                response_code = "400";
+                response_code = "400 Bad Request";
                 content = "Not a directory.\n";
             }
         } else {
-            response_code = "404";
+            response_code = "404 Not Found";
             content = "Directory not found.\n";
         }
     }
@@ -167,25 +167,25 @@ void Server::doCommand()
             if (s.st_mode & S_IFREG)
                 remove((root_folder + "/" + user + "/" + local_path).c_str());
             else {
-                response_code = "400";
+                response_code = "400 Bad Request";
                 content = "Not a file.\n";
             }
         } else {
-            response_code = "404";
+            response_code = "404 Not Found";
             content = "File not found.\n";
         }
     }
     else if (method == "PUT" && type == "folder" && response_code == "200") {
         if (mkdir((root_folder + "/" + user + "/" + local_path).c_str(), 0755) < 0)
         {
-            response_code = "404";
+            response_code = "404 Not Found";
             content = "Already exists.\n";
         }
     }
     else if (method == "GET" && type == "file" && response_code == "200") {
         if ((dir = opendir((root_folder + "/" + user + "/" + local_path).c_str())) == NULL)
         {
-            response_code = "404";
+            response_code = "404 Not Found";
             content = "File not found.\n";
         } else
             closedir(dir);
@@ -193,7 +193,7 @@ void Server::doCommand()
     else if (method == "PUT" && type == "file" && response_code == "200") {
         if ((dir = opendir((root_folder + "/" + user + "/" + local_path).c_str())) == NULL)
         {
-            response_code = "404";
+            response_code = "404 Not Found";
             content = "Already exists.\n";
         } else
             closedir(dir);
