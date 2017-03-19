@@ -108,11 +108,22 @@ void Server::doCommand()
     // default response code if everything went good
     string response_code = "200";
 
+    // reset content of string to be sent to user
     content = "";
 
-    if (method == "GET" && type == "folder")
+    // first we try if user folder exist on server
+    if ((dir = opendir(user.c_str())) != NULL)
+        closedir(dir);
+    else
     {
-        if ((dir = opendir(local_path.c_str())) != NULL)
+        response_code = "404";
+        content = "User Account Not Found.\n";
+    }
+
+    // then we process request sent from client
+    if (method == "GET" && type == "folder" && response_code == "200")
+    {
+        if ((dir = opendir((user + local_path).c_str())) != NULL)
         {
             /* print all the files and directories within directory */
             while ((ent = readdir(dir)) != NULL)
@@ -130,17 +141,19 @@ void Server::doCommand()
             content = "Directory not found.\n";
         }
     }
-    else if (method == "DELETE")
+    else if (method == "DELETE" && response_code == "200")
     {
-        if (remove(local_path.c_str()) < 0)
+        if (remove((user + local_path).c_str()) < 0)
         {
             perror("");
             response_code = "404";
             content = "Directory not found.\n";
         }
     }
-    else if (method == "PUT" && type == "folder") {
-        mkdir(local_path.c_str(), 0755);
+    else if (method == "PUT" && type == "folder" && response_code == "200") {
+        if (mkdir((user + local_path).c_str(), 0755) < 0)
+            response_code = "404";
+            content = "Already exists.\n";
     }
 
     createResponseHeader(response_code);

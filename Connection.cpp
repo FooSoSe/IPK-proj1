@@ -203,7 +203,7 @@ void Connection::readResponse()
             cout << serverResponse.substr(serverResponse.find("\r\n\r\n") + 4) << endl;
     } else {
         // print the error response from server
-        cout << serverResponse.substr(serverResponse.find("\r\n\r\n") + 4) << endl;
+        cerr << serverResponse.substr(serverResponse.find("\r\n\r\n") + 4) << endl;
     }
 }
 

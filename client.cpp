@@ -12,11 +12,7 @@ int main (int argc, const char * argv[])
 
     Connection connection(argv[1], argv[2]);
     connection.establishConnection();
-
-    if (connection.communicate()) {
-//        cerr <<
-        ; // TODO
-    }
+    connection.communicate();
 
     return 0;
 }
