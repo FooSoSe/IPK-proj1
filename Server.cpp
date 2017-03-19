@@ -119,6 +119,9 @@ void Server::doCommand()
         content = "User Account Not Found.\n";
     }
 
+    if (root_folder.back() == '/')
+        root_folder.substr(0, root_folder.length()-1);
+
     // then we process request sent from client
     if (method == "GET" && type == "folder" && response_code == "200 OK")
     {
