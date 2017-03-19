@@ -122,10 +122,10 @@ void Server::doCommand()
     // then we process request sent from client
     if (method == "GET" && type == "folder" && response_code == "200 OK")
     {
-        if (stat((/*root_folder + "/" +*/ user + "/" + local_path).c_str(), &s) == 0) {
+        if (stat((root_folder + "/" + user + "/" + local_path).c_str(), &s) == 0) {
             if (s.st_mode & S_IFDIR)
             {
-                if ((dir = opendir((/*root_folder + "/" +*/ user + "/" + local_path).c_str())) != NULL)
+                if ((dir = opendir((root_folder + "/" + user + "/" + local_path).c_str())) != NULL)
                 {
                     /* print all the files and directories within directory */
                     while ((ent = readdir(dir)) != NULL)
@@ -149,9 +149,9 @@ void Server::doCommand()
     }
     else if (method == "DELETE" && type == "folder" && response_code == "200 OK")
     {
-        if (stat((/*root_folder + "/" +*/ user + "/" + local_path).c_str(), &s) == 0) {
+        if (stat((root_folder + "/" + user + "/" + local_path).c_str(), &s) == 0) {
             if (s.st_mode & S_IFDIR)
-                remove((/*root_folder + "/" +*/ user + "/" + local_path).c_str());
+                remove((root_folder + "/" + user + "/" + local_path).c_str());
             else {
                 response_code = "400 Bad Request";
                 content = "Not a directory.\n";
@@ -163,9 +163,9 @@ void Server::doCommand()
     }
     else if (method == "DELETE" && type == "file" && response_code == "200 OK")
     {
-        if (stat((/*root_folder + "/" +*/ user + "/" + local_path).c_str(), &s) == 0) {
+        if (stat((root_folder + "/" + user + "/" + local_path).c_str(), &s) == 0) {
             if (s.st_mode & S_IFREG)
-                remove((/*root_folder + "/" + */user + "/" + local_path).c_str());
+                remove((root_folder + "/" + user + "/" + local_path).c_str());
             else {
                 response_code = "400 Bad Request";
                 content = "Not a file.\n";
@@ -176,14 +176,14 @@ void Server::doCommand()
         }
     }
     else if (method == "PUT" && type == "folder" && response_code == "200 OK") {
-        if (mkdir((/*root_folder + "/" +*/ user + "/" + local_path).c_str(), 0755) < 0)
+        if (mkdir((root_folder + "/" + user + "/" + local_path).c_str(), 0755) < 0)
         {
             response_code = "404 Not Found";
             content = "Already exists.\n";
         }
     }
     else if (method == "GET" && type == "file" && response_code == "200 OK") {
-        if ((dir = opendir((/*root_folder + "/" +*/ user + "/" + local_path).c_str())) == NULL)
+        if ((dir = opendir((root_folder + "/" + user + "/" + local_path).c_str())) == NULL)
         {
             response_code = "404 Not Found";
             content = "File not found.\n";
@@ -191,7 +191,7 @@ void Server::doCommand()
             closedir(dir);
     }
     else if (method == "PUT" && type == "file" && response_code == "200 OK") {
-        if ((dir = opendir((/*root_folder + "/" +*/ user + "/" + local_path).c_str())) == NULL)
+        if ((dir = opendir((root_folder + "/" + user + "/" + local_path).c_str())) == NULL)
         {
             response_code = "404 Not Found";
             content = "Already exists.\n";
