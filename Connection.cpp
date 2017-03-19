@@ -36,9 +36,6 @@ void Connection::parseArguments()
     {
         end_of_server_hostname = http_path.find("/", http_len);
         port_number = 6677;     // implicit port number
-    } else {
-        cerr << "Error while reading request given on command line\n" << endl;
-        exit(EXIT_FAILURE);
     }
     server_hostname = http_path.substr(http_len, end_of_server_hostname - http_len);
 
