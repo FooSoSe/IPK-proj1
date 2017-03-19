@@ -15,12 +15,11 @@ $ ftrest del http://localhost:12345/tonda/foo/bar/doc.pdf
 Odstranění adresáře bar:
 $ ftrest rmd http://localhost:12345/tonda/foo/bar
 
- */
+*/
 
-#define DEBUG
+//#define DEBUG
 
 #include "Server.h"
-#include <stdlib.h>
 
 using namespace std;
 

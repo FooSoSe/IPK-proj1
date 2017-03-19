@@ -143,7 +143,6 @@ void Server::doCommand()
     {
         if (remove((user + "/" + local_path).c_str()) < 0)
         {
-            perror("");
             response_code = "404";
             content = "Directory not found.\n";
         }

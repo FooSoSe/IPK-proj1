@@ -1,6 +1,6 @@
 #include "Connection.h"
 
-#define DEBUG
+//#define DEBUG
 
 using namespace std;
 
