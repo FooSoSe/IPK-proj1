@@ -102,6 +102,7 @@ void Server::doCommand()
 {
     DIR *dir;
     struct dirent *ent;
+    struct stat s;
 
     // default response code if everything went good
     string response_code = "200";
@@ -121,22 +122,30 @@ void Server::doCommand()
     // then we process request sent from client
     if (method == "GET" && type == "folder" && response_code == "200")
     {
-        if ((dir = opendir((user + "/" + local_path).c_str())) != NULL)
-        {
-            /* print all the files and directories within directory */
-            while ((ent = readdir(dir)) != NULL)
+        if (stat((user + "/" + local_path).c_str(), &s) == 0) {
+            if (s.st_mode & S_IFDIR)
             {
-                if (strcmp(ent->d_name, ".") == 0 || strcmp(ent->d_name, "..") == 0)
-                    continue;
+                if ((dir = opendir((user + "/" + local_path).c_str())) != NULL)
+                {
+                    /* print all the files and directories within directory */
+                    while ((ent = readdir(dir)) != NULL)
+                    {
+                        if (strcmp(ent->d_name, ".") == 0 || strcmp(ent->d_name, "..") == 0)
+                            continue;
 
-                content += ent->d_name;
-                content += "\t";
+                        content += ent->d_name;
+                        content += "\t";
+                    }
+                    closedir(dir);
+                } else {
+                    // 404 Not Found - objekt (soubor/adresář) v požadavku neexistuje
+                    response_code = "404";
+                    content = "Directory not found.\n";
+                }
+            } else {
+                response_code = "400";
+                content = "Not a directory.\n";
             }
-            closedir(dir);
-        } else {
-            // 404 Not Found - objekt (soubor/adresář) v požadavku neexistuje
-            response_code = "404";
-            content = "Directory not found.\n";
         }
     }
     else if (method == "DELETE" && response_code == "200")
