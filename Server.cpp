@@ -120,7 +120,7 @@ void Server::doCommand()
     }
 
     // then we process request sent from client
-    if (method == "GET" && type == "folder" && response_code == "200")
+    if (method == "GET" && type == "folder" && response_code == "200 OK")
     {
         if (stat((/*root_folder + "/" +*/ user + "/" + local_path).c_str(), &s) == 0) {
             if (s.st_mode & S_IFDIR)
@@ -147,7 +147,7 @@ void Server::doCommand()
             content = "Directory not found.\n";
         }
     }
-    else if (method == "DELETE" && type == "folder" && response_code == "200")
+    else if (method == "DELETE" && type == "folder" && response_code == "200 OK")
     {
         if (stat((/*root_folder + "/" +*/ user + "/" + local_path).c_str(), &s) == 0) {
             if (s.st_mode & S_IFDIR)
@@ -161,7 +161,7 @@ void Server::doCommand()
             content = "Directory not found.\n";
         }
     }
-    else if (method == "DELETE" && type == "file" && response_code == "200")
+    else if (method == "DELETE" && type == "file" && response_code == "200 OK")
     {
         if (stat((/*root_folder + "/" +*/ user + "/" + local_path).c_str(), &s) == 0) {
             if (s.st_mode & S_IFREG)
@@ -175,14 +175,14 @@ void Server::doCommand()
             content = "File not found.\n";
         }
     }
-    else if (method == "PUT" && type == "folder" && response_code == "200") {
+    else if (method == "PUT" && type == "folder" && response_code == "200 OK") {
         if (mkdir((/*root_folder + "/" +*/ user + "/" + local_path).c_str(), 0755) < 0)
         {
             response_code = "404 Not Found";
             content = "Already exists.\n";
         }
     }
-    else if (method == "GET" && type == "file" && response_code == "200") {
+    else if (method == "GET" && type == "file" && response_code == "200 OK") {
         if ((dir = opendir((/*root_folder + "/" +*/ user + "/" + local_path).c_str())) == NULL)
         {
             response_code = "404 Not Found";
@@ -190,7 +190,7 @@ void Server::doCommand()
         } else
             closedir(dir);
     }
-    else if (method == "PUT" && type == "file" && response_code == "200") {
+    else if (method == "PUT" && type == "file" && response_code == "200 OK") {
         if ((dir = opendir((/*root_folder + "/" +*/ user + "/" + local_path).c_str())) == NULL)
         {
             response_code = "404 Not Found";
