@@ -11,6 +11,12 @@
 
 using namespace std;
 
+enum {
+    OK = 200,
+//    NOT_FOUND = 400,
+//    BAD_REQUEST = 404
+};
+
 class Connection
 {
     // buffer
@@ -27,18 +33,20 @@ class Connection
     string user;
     string remote_path;
 
-    int client_socket, bytestx, bytesrx;
+    int client_socket;
 
     struct hostent *server;
     struct sockaddr_in server_address;
-    socklen_t serverlen;
 
     void parseArguments();
-
+    void createHTTPHeader();
+    void readResponse();
 public:
     Connection(const string &command, const string &http_path)
             : command{command}, http_path{http_path} { parseArguments(); };
 
     void establishConnection();
-    void communicate();
+    int communicate();
+
+    string http_header;
 };

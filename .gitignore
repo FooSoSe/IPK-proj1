@@ -16,8 +16,8 @@
 # Fortran module files
 *.mod
 *.smod
-
 # Compiled Static libraries
+
 *.lai
 *.la
 *.a
@@ -33,3 +33,4 @@ CMakeLists.txt
 ftrest
 ftrestd
 cmake-build-debug/
+.idea/
