@@ -33,9 +33,10 @@ class Server {
     void doCommand();
 
 public:
-    string root_folder = "./";
+    string root_folder = ".";
     int port_number = 6677;
 
     void establishConnection();
     void doResponse();
 };
+
